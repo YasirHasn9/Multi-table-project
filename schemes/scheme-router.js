@@ -2,7 +2,9 @@ const express = require("express");
 
 const Schemes = require("./scheme-model.js");
 
-const router = express.Router();
+const router = express.Router({
+  mergeParams: true
+});
 
 router.get("/", (req, res) => {
   Schemes.find()
@@ -32,22 +34,30 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.get("/:id/steps", (req, res) => {
-  const { id } = req.params;
+router.get("/:id/steps", async (req, res, next) => {
+  // const { id } = req.params;
 
-  Schemes.findSteps(id)
-    .then(steps => {
-      if (steps.length) {
-        res.json(steps);
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find steps for given scheme" });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get steps" });
-    });
+  // Schemes.findSteps(id)
+  //   .then(steps => {
+  //     if (steps.length) {
+  //       res.json(steps);
+  //     } else {
+  //       res
+  //         .status(404)
+  //         .json({ message: "Could not find steps for given scheme" });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({ message: "Failed to get steps" });
+  //   });
+  try {
+    const { id } = req.params;
+    const steps = await Schemes.findSteps(id);
+    res.json(steps);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 });
 
 router.post("/", (req, res) => {

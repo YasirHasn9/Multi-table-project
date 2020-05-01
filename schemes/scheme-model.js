@@ -12,7 +12,17 @@ function findById(id) {
     .first();
 }
 
+function findSteps(scheme_id) {
+  // select *  from steps
+  // join schemes
+  // on steps.scheme_id = schemes.id
+  return db("steps")
+    .join("schemes", "schemes.id", "steps.scheme_id")
+    .where({ scheme_id });
+}
+
 module.exports = {
   find,
-  findById
+  findById,
+  findSteps
 };
