@@ -35,21 +35,6 @@ router.get("/:id", (req, res) => {
 });
 
 router.get("/:id/steps", async (req, res, next) => {
-  // const { id } = req.params;
-
-  // Schemes.findSteps(id)
-  //   .then(steps => {
-  //     if (steps.length) {
-  //       res.json(steps);
-  //     } else {
-  //       res
-  //         .status(404)
-  //         .json({ message: "Could not find steps for given scheme" });
-  //     }
-  //   })
-  //   .catch(err => {
-  //     res.status(500).json({ message: "Failed to get steps" });
-  //   });
   try {
     const { id } = req.params;
     const steps = await Schemes.findSteps(id);
@@ -60,16 +45,14 @@ router.get("/:id/steps", async (req, res, next) => {
   }
 });
 
-router.post("/", (req, res) => {
-  const schemeData = req.body;
-
-  Schemes.add(schemeData)
-    .then(scheme => {
-      res.status(201).json(scheme);
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to create new scheme" });
-    });
+router.post("/", async (req, res, next) => {
+    try{
+      const schemeData = req.body;
+      const newScheme = await  Schemes.add(schemeData)
+      res.status(201).json(newScheme)
+    } catch(err){
+      next(err)
+    }
 });
 
 router.post("/:id/steps", (req, res) => {

@@ -19,10 +19,19 @@ function findSteps(scheme_id) {
   return db("steps")
     .join("schemes", "schemes.id", "steps.scheme_id")
     .where({ scheme_id });
+  // if we chained the first() to where , it return the first step
+  // so first is only for a single return .
+}
+
+
+async function add(scheme) {
+	const [id] = await db("schemes").insert(scheme)
+	return db("schemes").where({ id }).first()
 }
 
 module.exports = {
   find,
   findById,
-  findSteps
+  findSteps,
+  add
 };
