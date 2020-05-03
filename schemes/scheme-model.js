@@ -23,15 +23,32 @@ function findSteps(scheme_id) {
   // so first is only for a single return .
 }
 
-
 async function add(scheme) {
-	const [id] = await db("schemes").insert(scheme)
-	return db("schemes").where({ id }).first()
+  const [id] = await db("schemes").insert(scheme);
+  return db("schemes")
+    .where({ id })
+    .first();
+}
+
+async function update(change, id) {
+  await db("scheme")
+    .where({ id })
+    .update({ change });
+
+  return findById(id);
+}
+
+async function remove(id) {
+  return await db("schemes")
+    .where({ id })
+    .del();
 }
 
 module.exports = {
   find,
   findById,
   findSteps,
-  add
+  add,
+  update,
+  remove
 };
