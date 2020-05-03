@@ -6,32 +6,25 @@ const router = express.Router({
   mergeParams: true
 });
 
-router.get("/", (req, res) => {
-  Schemes.find()
-    .then(schemes => {
-      res.json(schemes);
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get schemes" });
-    });
+router.get("/", async (req, res) => {
+  try {
+    const schemes = await Schemes.find();
+    res.json(schemes);
+  } catch (err) {
+    next(err);
+    console.log(err);
+  }
 });
 
-router.get("/:id", (req, res) => {
-  const { id } = req.params;
-
-  Schemes.findById(id)
-    .then(scheme => {
-      if (scheme) {
-        res.json(scheme);
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id." });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get schemes" });
-    });
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const scheme = await Schemes.findById(id);
+    res.json(scheme);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 });
 
 router.post("/", async (req, res, next) => {
@@ -44,25 +37,16 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-
-  Schemes.remove(id)
-    .then(deleted => {
-      if (deleted) {
-        res.json({ removed: deleted });
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id" });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to delete scheme" });
-    });
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Schemes.remove(id);
+    res.json({ removed: deleted });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 });
-
-
 
 router.get("/:id/steps", async (req, res, next) => {
   try {

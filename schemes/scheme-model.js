@@ -30,10 +30,10 @@ async function add(scheme) {
     .first();
 }
 
-async function update(change, id) {
-  await db("scheme")
+async function update(changes, id) {
+  await db("schemes")
     .where({ id })
-    .update({ change });
+    .update(changes);
 
   return findById(id);
 }
@@ -42,6 +42,13 @@ async function remove(id) {
   return await db("schemes")
     .where({ id })
     .del();
+}
+
+async function addStep(step, scheme_id) {
+  const [id] = await db("steps").insert(step);
+  return db("steps")
+    .where({ scheme_id: id })
+    .first();
 }
 
 module.exports = {
